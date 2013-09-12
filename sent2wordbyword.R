@@ -1,4 +1,4 @@
-RSVPSplit <- function(filename,wordsPreceedingTarget = 18,inputTargetColumnName="Target.Word",inputSentenceColumnName="Sentence",wordsAfterTarget=15,skipChar = "-->",eprimeTargetColumnName = "tTarget19",fileEncoding="latin1"){
+RSVPSplit <- function(filename,wordsPreceedingTarget = 18,inputTargetColumnName="Target.Word",inputSentenceColumnName="Sentence",wordsAfterTarget=15,skipChar = "-->",eprimeTargetColumnName = "tTarget19",fileEncoding="latin1", fillerColumnName="SentType", fillerName="Filler"){
 
 data <- read.csv(filename,encoding=fileEncoding)
 
@@ -16,7 +16,9 @@ for (row in as.numeric(rownames(data))){
 
   for (word in unlist(currentSent)){
     warningFlag3=FALSE
-    if(word %in% data[-row,inputTargetColumnName]){
+    templist <- data[-row,]
+    templist <- templist[data[,fillerColumnName] != fillerName,inputTargetColumnName]
+    if(word %in% templist){
       warningFlag3=TRUE
     }
       
@@ -34,7 +36,7 @@ for (row in as.numeric(rownames(data))){
       startingVar = startingVar+1
     }
 
-    if(warningFlag3==TRUE){warning(paste(sep="","One of your sentences (#",row, ") contained a word (\"",word,"\") that is a target word for another sentence!! You will have to fix this manually."))}
+    if(warningFlag3==TRUE){warning(paste(sep="","One of your sentences (#",row, ") contained a word (\"",word,"\") that is a target word for another experimental sentence!! You will have to fix this manually."))}
 
 
       
